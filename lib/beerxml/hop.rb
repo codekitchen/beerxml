@@ -1,7 +1,7 @@
 class Beerxml::Hop < Beerxml::Model
   property :name, String, :required => true
   property :alpha, Float, :required => true
-  property :amount, Float, :required => true
+  property :amount, Weight, :required => true
   property :use, Enum['Boil', 'Dry Hop', 'Mash', 'First Wort', 'Aroma'], :required => true
   property :time, Integer, :required => true
 
