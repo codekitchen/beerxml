@@ -5,7 +5,7 @@ describe "beerxml.com examples" do
     Nokogiri::XML(File.read("examples/beerxml.com/#{example}.xml"))
   end
 
-  it "parse the first recipe and its hops" do
+  it "should parse the first recipe and its hops" do
     recipe = Beerxml::Recipe.new.from_xml(read_xml("recipes").root.children[1])
 
     recipe.name.should == "Burton Ale"

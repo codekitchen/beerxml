@@ -1,6 +1,3 @@
-require 'bundler'
-Bundler.require(:default)
-
 require 'dm-core'
 require 'dm-types'
 require 'dm-validations'
