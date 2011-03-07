@@ -4,6 +4,7 @@ class Beerxml::Hop < Beerxml::Model
   property :amount, Float, :required => true
   property :use, Enum['Boil', 'Dry Hop', 'Mash', 'First Wort', 'Aroma'], :required => true
   property :time, Integer, :required => true
+
   property :notes, String, :length => 65535
   property :type, Enum[nil, 'Bittering', 'Aroma', 'Both']
   property :form, Enum[nil, 'Pellet', 'Plug', 'Leaf']

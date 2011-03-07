@@ -1,9 +1,6 @@
-require 'bundler'
-Bundler.require(:default, :development)
-
 require 'beerxml'
 
-require 'ruby-debug'
+require 'rspec'
 
 RSpec.configure do |c|
 end

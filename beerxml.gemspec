@@ -22,8 +22,9 @@ Gem::Specification.new do |s|
   s.add_dependency "dm-validations", "~> 1.0"
   s.add_dependency "dm-types", "~> 1.0"
 
-  s.add_development_dependency "rspec", "~> 2.0"
-  s.add_development_dependency "ruby-debug"
+  s.add_development_dependency "rspec", "~> 2.5"
+  s.add_development_dependency "autotest-standalone"
+  s.add_development_dependency "autotest-growl"
   s.add_development_dependency "rcov"
   s.add_development_dependency "yard"
 end
