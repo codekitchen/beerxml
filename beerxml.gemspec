@@ -18,4 +18,12 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "nokogiri", "~> 1.4"
+  s.add_dependency "dm-core", "~> 1.0"
+  s.add_dependency "dm-validations", "~> 1.0"
+  s.add_dependency "dm-types", "~> 1.0"
+
+  s.add_development_dependency "rspec", "~> 2.0"
+  s.add_development_dependency "ruby-debug"
+  s.add_development_dependency "rcov"
+  s.add_development_dependency "yard"
 end
