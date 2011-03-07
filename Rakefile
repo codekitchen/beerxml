@@ -16,5 +16,5 @@ end
 require 'yard'
 YARD::Rake::YardocTask.new(:doc) do |t|
   version = Beerxml::VERSION
-  t.options = ["--title", "beerxml #{version}"]
+  t.options = ["--title", "beerxml #{version}", "--files", "LICENSE"]
 end
