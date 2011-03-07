@@ -1,10 +1,41 @@
 class Beerxml::Model
   include DataMapper::Resource
 
+  ##########################
+
+  @models = {}
+  @plurals = {}
+
   def self.beerxml_name
     name.split('::').last.upcase
   end
 
+  def self.beerxml_plural_name
+    "#{beerxml_name}S"
+  end
+
+  def self.inherited(klass)
+    super
+    @models[klass.beerxml_name] = klass
+    @plurals["#{klass.beerxml_name}S"] = klass
+  end
+
+  ##########################
+
+  # Takes a Nokogiri node, figures out what sort of class it is, and parses it.
+  # Raises if it's not a Beerxml::Model class (or collection).
+  def self.from_xml(node)
+    if model = @models[node.name]
+      model.new.from_xml(node)
+    elsif model = @plurals[node.name]
+      collection_from_xml(node)
+    else
+      raise "Unknown BeerXML node type: #{node.name}"
+    end
+  end
+
+  # Parse a Nokogiri node, reading in the properties defined on this model.
+  # Assumes the node is of the correct type.
   def from_xml(node)
     properties.each do |property|
       read_xml_field(node, property.name.to_s)
@@ -14,15 +45,24 @@ class Beerxml::Model
       child_model = rel.child_model
       next unless child_model.ancestors.include?(Beerxml::Model)
 
-      model_name = child_model.beerxml_name
-      child_wrapper_node = (node>model_name.pluralize.upcase).first
-      next unless child_wrapper_node
-
-      (child_wrapper_node>model_name).each do |child_node|
-        self.send(rel.name) << child_model.new.from_xml(child_node)
+      # look for the plural element in the children of this node
+      # e.g., for Hop, see if there's any HOPS element.
+      (node>child_model.beerxml_plural_name).each do |child_wrapper_node|
+        collection = Beerxml::Model.collection_from_xml(child_wrapper_node)
+        self.send(rel.name).concat(collection)
       end
     end
     self
+  end
+
+  # takes a collection root xml node, like <HOPS>, and returns an array of the
+  # child model objects inside the node.
+  def self.collection_from_xml(collection_node)
+    model = @plurals[collection_node.name]
+    raise("Unknown model: #{collection_node.name}") unless model
+    (collection_node>model.beerxml_name).map do |child_node|
+      model.new.from_xml(child_node)
+    end
   end
 
   def read_xml_field(node, attr_name, node_name = attr_name.upcase)
@@ -32,6 +72,8 @@ class Beerxml::Model
     child = yield(child) if block_given?
     self.send("#{attr_name}=", child)
   end
+
+  ##########################
 
   def to_beerxml(parent = Nokogiri::XML::Document.new)
     # TODO: do we raise an error if not valid?
@@ -55,5 +97,5 @@ class Beerxml::Model
   end
 end
 
-require 'beerxml/hop'
-require 'beerxml/recipe'
+%w(hop recipe).
+  each { |f| require "beerxml/#{f}" }
