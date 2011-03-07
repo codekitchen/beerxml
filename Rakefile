@@ -10,6 +10,7 @@ end
 RSpec::Core::RakeTask.new(:rcov) do |t|
   t.rspec_opts = "-c -f d"
   t.rcov = true
+  t.rcov_opts = ["--exclude", "spec,gems/,rubygems/"]
 end
 
 require 'yard'
