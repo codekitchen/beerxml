@@ -8,6 +8,7 @@ module Beerxml::Properties
   class Weight < DataMapper::Property::Float
     def load(value)
       return if value.nil?
+      return value if value.is_a?(Beerxml::Primitives::Weight)
       Beerxml::Primitives::Weight.new(value, 'kg')
     end
 
