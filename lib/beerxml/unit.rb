@@ -1,3 +1,5 @@
+# Unit system with conversions between units of the same type. Very much
+# a work in progress.
 class Beerxml::Unit
   attr_reader :type, :unit
 
@@ -5,25 +7,25 @@ class Beerxml::Unit
   BaseUnits = {}
   UnitToType = {}
 
-  def in(unit)
-    ret = self.clone
-    ret.unit = unit
-    ret
+  def in(unit, *args)
+    self.clone.in!(unit, *args)
   end
   alias_method :to, :in
 
-  def base_unit
-    BaseUnits[type]
-  end
-
-  def unit=(new_unit)
+  def in!(new_unit, *args)
     new_unit = new_unit.to_s
     new_unit_type = UnitToType[new_unit]
-    raise(ArgumentError, "Unknown unit: #{unit}") if new_unit_type.nil?
+    raise(ArgumentError, "Unknown unit: #{new_unit}") if new_unit_type.nil?
     if new_unit_type != type
       raise(ArgumentError, "New unit: #{new_unit} not compatible with current unit: #{unit}")
     end
     @unit = new_unit
+    self
+  end
+  alias_method :unit=, :in!
+
+  def base_unit
+    BaseUnits[type]
   end
 
   def to_f
@@ -91,6 +93,17 @@ class Beerxml::Unit
     to_f.to_s
   end
 
+  def *(rhs)
+    if rhs.is_a?(Numeric)
+      ret = Unit.new(self.to_f * rhs, self.unit)
+    elsif rhs.is_a?(Unit) && rhs.type == type
+      ret = Unit.new(self.to_f * rhs.to(self.unit).to_f, self.unit)
+    else
+      super
+    end
+  end
+
+  # Assumes earth gravity ;)
   module Weight
     def self.included(k)
       k.add_type('weight', 'kg', 'kilogram', 'kilograms')
@@ -98,12 +111,32 @@ class Beerxml::Unit
       k.add('weight', 2.204622, 'lb', 'pound', 'pounds', 'lbs')
       k.add('weight', 35.273961, 'oz', 'ounce', 'ounces')
     end
-
-    def weight?
-      type == 'weight'
-    end
   end
   include Weight
+
+  module Volume
+    def self.included(k)
+      k.add_type('volume', 'liters', 'l', 'liter')
+    end
+  end
+  include Volume
+
+  module Time
+    def self.included(k)
+      k.add_type('time', 'day', 'days')
+      k.add('time', 24, 'hour', 'hours')
+      k.add('time', 1440, 'minute', 'minutes')
+    end
+  end
+  include Time
+
+  module Temperature
+    def self.included(k)
+      k.add_type('temperature', 'c', 'C', 'celsius')
+      # k.add('temperature', proc {}, 'f', 'F', 'fahrenheit')
+    end
+  end
+  include Temperature
 end
 
 def U(*a)

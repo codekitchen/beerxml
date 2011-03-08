@@ -23,7 +23,7 @@ class Beerxml::Hop < Beerxml::Model
 
   def tinseth(post_boil_og, batch_size) # batch size is gallons for now
     bigness = 1.65 * 0.000125**(post_boil_og - 1)
-    boil_factor = (1 - 2.72 ** (-0.04 * time)) / 4.15
+    boil_factor = (1 - 2.72 ** (-0.04 * time.in_minutes.to_f)) / 4.15
     utilization = bigness * boil_factor
     ibus = utilization * (aau * 0.01 * 7490) / batch_size
     ibus.round

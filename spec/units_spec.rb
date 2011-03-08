@@ -56,7 +56,11 @@ describe Beerxml::Unit do
       proc { w == "5" }.should raise_error(ArgumentError)
     end
 
-    it "should not allow equality between incompatible units"
+    it "should not allow equality between incompatible units" do
+      w = U(53.97, 'oz')
+      v = U(2, 'gallons')
+      proc { w == v }.should raise_error(ArgumentError)
+    end
   end
 
   it "should infer in_* methods for defined units" do
@@ -75,10 +79,13 @@ describe Beerxml::Unit do
 
     it "should not allow changing to an unknown unit" do
       w = U(1, 'kg')
-      proc { w.unit = 'blorg' }.should raise_error(ArgumentError)
+      proc { w.in!('blorg') }.should raise_error(ArgumentError)
     end
 
-    it "should not allow changing to an incompatible unit"
+    it "should not allow changing to an incompatible unit" do
+      w = U(1, 'kg')
+      proc { w.in!('minutes') }.should raise_error(ArgumentError)
+    end
   end
 
   describe "changing units with in()" do
@@ -96,6 +103,10 @@ describe Beerxml::Unit do
       proc { w.in_blorg }.should raise_error(ArgumentError)
     end
 
-    it "should not allow changing to an incompatible unit"
+    it "should not allow changing to an incompatible unit" do
+      w = U(1, 'kg')
+      proc { w.in('minutes') }.should raise_error(ArgumentError)
+      proc { w.in_hours }.should raise_error(ArgumentError)
+    end
   end
 end

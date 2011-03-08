@@ -3,26 +3,24 @@ require 'beerxml/unit'
 # Custom DM property types for the various BeerXML data types.
 module Beerxml::Properties
 
-  # Represents a weight. Default scale is kilograms, since that's what
-  # BeerXML uses. But can handle conversion/display of other units.
-  class Weight < DataMapper::Property::Float
-    def custom? # skip the default Float validations
+  class Property < DataMapper::Property::Float
+    def custom?
       true
     end
 
     def load(value)
       return if value.nil?
       if value.is_a?(Beerxml::Unit)
-        raise(ArgumentError, 'Weight required') unless value.weight?
+        raise(ArgumentError, 'Weight required') unless value.type == unit_type
         value
       else
-        U(value, 'kg')
+        U(value, base_unit)
       end
     end
 
     def dump(value)
       return if value.nil?
-      value.in('kg').to_f
+      value.in(base_unit).to_f
     end
 
     def typecast_to_primitive(value)
@@ -30,19 +28,52 @@ module Beerxml::Properties
     end
   end
 
-  class Volume < DataMapper::Property::Float
+  # Represents a weight. Default scale is kilograms, since that's what
+  # BeerXML uses. But can handle conversion/display of other units.
+  class Weight < Property
+    def unit_type
+      'weight'
+    end
+    def base_unit
+      'kilograms'
+    end
   end
 
-  class Temperature < DataMapper::Property::Float
+  # A volume, in liters.
+  class Volume < Property
+    def unit_type
+      'volume'
+    end
+    def base_unit
+      'liters'
+    end
   end
 
-  class Time < DataMapper::Property::Float
+  # A temperature, in deg C.
+  class Temperature < Property
+    def unit_type
+      'temperature'
+    end
+    def base_unit
+      'C'
+    end
   end
 
-  class TimeInDays < DataMapper::Property::Float
+  # A time, in minutes.
+  class Time < Property
+    def unit_type
+      'time'
+    end
+    def base_unit
+      'minutes'
+    end
   end
 
-  class Color < DataMapper::Property::Float
+  # Time, but in days.
+  class TimeInDays < Time
+    def base_unit
+      'days'
+    end
   end
 
   # Appendix A: http://www.beerxml.com/beerxml.htm
@@ -59,8 +90,4 @@ module Beerxml::Properties
 
   class DisplayTime < Time
   end
-
-  class DisplayColor < Color
-  end
-
 end
