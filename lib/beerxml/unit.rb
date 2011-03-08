@@ -89,8 +89,8 @@ class Unit
   end
 
   def method_missing(meth, *a, &b)
-    if meth.to_s =~ %r{\A(to|in)_(.*)\z}
-      send(:in, $2)
+    if meth.to_s =~ %r{\A(to|in)_([^!]+)(!)?\z}
+      send($3 ? :in! : :in, $2)
     else
       super
     end
@@ -99,6 +99,10 @@ class Unit
   # todo: remove this, to_beerxml is using it (and incorrectly at that)
   def to_s
     to_f.to_s
+  end
+
+  def inspect
+    "[#{to_f} #{unit}]"
   end
 
   def *(rhs)
@@ -146,6 +150,16 @@ class Unit
     end
   end
   include Temperature
+
+  def self.apply_to_numeric!
+    Beerxml::Unit::UnitToType.each do |unit, v|
+      Numeric.class_eval(<<-METHOD, __FILE__, __LINE__+1)
+      def #{unit}
+        Beerxml::Unit.new(self, #{unit.inspect})
+      end
+      METHOD
+    end
+  end
 end
 end
 
