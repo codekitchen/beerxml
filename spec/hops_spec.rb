@@ -1,13 +1,13 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-include Beerxml::Primitives
+require 'beerxml/unit'
 
 describe Beerxml::Hop do
   describe "IBUs" do
     it "should calculate IBUs using the Tinseth formula" do
       hop = Beerxml::Hop.new(:name => "Cascade",
                              :alpha => 6,
-                             :amount => Weight.new(0.5, 'oz'),
+                             :amount => U('0.5 oz'),
                              :use => 'Boil',
                              :time => 20)
       hop.should be_valid
@@ -17,7 +17,7 @@ describe Beerxml::Hop do
 
       hop2 = Beerxml::Hop.new(:name => 'Goldings',
                               :alpha => 5,
-                              :amount => Weight.new(4.5, 'oz'),
+                              :amount => U(4.5, 'oz'),
                               :use => 'Boil',
                               :time => 60)
       hop2.should be_valid

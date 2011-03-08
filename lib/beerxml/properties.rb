@@ -1,4 +1,4 @@
-require 'beerxml/primitives'
+require 'beerxml/unit'
 
 # Custom DM property types for the various BeerXML data types.
 module Beerxml::Properties
@@ -6,10 +6,18 @@ module Beerxml::Properties
   # Represents a weight. Default scale is kilograms, since that's what
   # BeerXML uses. But can handle conversion/display of other units.
   class Weight < DataMapper::Property::Float
+    def custom? # skip the default Float validations
+      true
+    end
+
     def load(value)
       return if value.nil?
-      return value if value.is_a?(Beerxml::Primitives::Weight)
-      Beerxml::Primitives::Weight.new(value, 'kg')
+      if value.is_a?(Beerxml::Unit)
+        raise(ArgumentError, 'Weight required') unless value.weight?
+        value
+      else
+        U(value, 'kg')
+      end
     end
 
     def dump(value)
