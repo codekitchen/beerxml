@@ -1,6 +1,7 @@
+module Beerxml
 # Unit system with conversions between units of the same type. Very much
 # a work in progress.
-class Beerxml::Unit
+class Unit
   attr_reader :type, :unit
 
   Units = {}
@@ -22,6 +23,7 @@ class Beerxml::Unit
     @unit = new_unit
     self
   end
+  alias_method :to!, :in!
   alias_method :unit=, :in!
 
   def base_unit
@@ -33,7 +35,13 @@ class Beerxml::Unit
   end
 
   def initialize(amount, unit = nil)
-    if !unit
+    if amount.is_a?(Unit)
+      if unit
+        amount = amount.to(unit).to_f
+      else
+        amount, unit = amount.to_f, amount.unit
+      end
+    elsif !unit
       amount, unit = amount.to_s.split(/\s+/, 2)
     end
     unit = unit.to_s
@@ -117,6 +125,7 @@ class Beerxml::Unit
   module Volume
     def self.included(k)
       k.add_type('volume', 'liters', 'l', 'liter')
+      k.add('volume', 0.26417, 'gallons', 'gallon')
     end
   end
   include Volume
@@ -137,6 +146,7 @@ class Beerxml::Unit
     end
   end
   include Temperature
+end
 end
 
 def U(*a)

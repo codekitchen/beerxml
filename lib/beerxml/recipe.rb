@@ -45,4 +45,9 @@ class Beerxml::Recipe < Beerxml::Model
 
   # these are not used in the xml
   property :id, Serial
+
+  def tinseth
+    hops.inject(0) { |v, h| v + h.tinseth(og, batch_size) }.round
+  end
+  alias_method :ibus, :tinseth
 end

@@ -41,6 +41,17 @@ describe Beerxml::Unit do
     w.should == U('53.97 oz')
   end
 
+  it "should allow constructing from another compatible Unit object" do
+    w = U(53.97, 'oz')
+    w2 = U(w) # defaults to oz, same units as copying object
+    w3 = U(w, 'kg')
+    w.should == w2
+    w.should == w3
+    w2.should == w3
+    w2.should == 53.97
+    w3.should == 1.53
+  end
+
   describe "equality" do
     it "should compare between units" do
       w = U(3.5, 'kg')
