@@ -20,4 +20,15 @@ class Beerxml::Fermentable < Beerxml::Model
   # these are not used in the xml
   property :id, Serial
   belongs_to :recipe, :required => false
+
+  def ppg
+    # potential is (yield * 0.001 + 1)
+    (self.yield * 0.01) * 46.214
+  end
+
+  def total_ppg(efficiency = nil)
+    total = ppg * amount.in_pounds.to_f
+    total *= (efficiency * 0.01) unless efficiency.nil? || type != 'Grain'
+    total
+  end
 end

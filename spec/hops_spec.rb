@@ -21,7 +21,7 @@ describe Beerxml::Hop do
                               :use => 'Boil',
                               :time => 60)
       hop2.should be_valid
-      hop2.ibus(1.081, 11).should == 27
+      hop2.ibus(1.081, 11).should == 26.7
     end
   end
 end

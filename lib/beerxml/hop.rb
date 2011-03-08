@@ -26,7 +26,7 @@ class Beerxml::Hop < Beerxml::Model
     boil_factor = (1 - 2.72 ** (-0.04 * time.in_minutes.to_f)) / 4.15
     utilization = bigness * boil_factor
     ibus = utilization * (aau * 0.01 * 7490) / U(batch_size, 'gallons').to_f
-    ibus.round
+    Beerxml.round(ibus, 1)
   end
   alias_method :ibus, :tinseth
 
