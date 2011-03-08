@@ -3,7 +3,7 @@ class Beerxml::Hop < Beerxml::Model
   property :alpha, Float, :required => true
   property :amount, Weight, :required => true
   property :use, Enum['Boil', 'Dry Hop', 'Mash', 'First Wort', 'Aroma'], :required => true
-  property :time, Integer, :required => true
+  property :time, Time, :required => true
 
   property :notes, String, :length => 65535
   property :type, Enum[nil, 'Bittering', 'Aroma', 'Both']

@@ -3,7 +3,7 @@ class Beerxml::Fermentable < Beerxml::Model
   property :type, Enum['Grain', 'Sugar', 'Extract', 'Dry Extract', 'Adjunct'], :required => true
   property :amount, Weight, :required => true
   property :yield, Float, :required => true
-  property :color, Float, :required => true
+  property :color, Color, :required => true
 
   property :add_after_boil, Boolean, :default => false
   property :origin, String, :length => 512

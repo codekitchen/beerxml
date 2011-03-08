@@ -30,10 +30,37 @@ module Beerxml::Properties
     end
   end
 
+  class Volume < DataMapper::Property::Float
+  end
+
+  class Temperature < DataMapper::Property::Float
+  end
+
+  class Time < DataMapper::Property::Float
+  end
+
+  class TimeInDays < DataMapper::Property::Float
+  end
+
+  class Color < DataMapper::Property::Float
+  end
+
   # Appendix A: http://www.beerxml.com/beerxml.htm
   # "all fields that are defined for display only may also use a unit
   # tag after them". For example “3.45 gal” is an acceptable value.
   class DisplayWeight < Weight
+  end
+
+  class DisplayVolume < Volume
+  end
+
+  class DisplayTemperature < Temperature
+  end
+
+  class DisplayTime < Time
+  end
+
+  class DisplayColor < Color
   end
 
 end
