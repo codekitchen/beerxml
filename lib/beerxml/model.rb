@@ -99,5 +99,5 @@ class Beerxml::Model
   end
 end
 
-%w(hop recipe fermentable).
+%w(hop recipe fermentable yeast).
   each { |f| require "beerxml/#{f}" }

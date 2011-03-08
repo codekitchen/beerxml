@@ -14,7 +14,7 @@ class Beerxml::Recipe < Beerxml::Model
   has n, :hops
   has n, :fermentables
   # has n, :miscs
-  # has n, :yeasts
+  has n, :yeasts
   # has n, :waters
 
   property :asst_brewer, String
@@ -55,5 +55,10 @@ class Beerxml::Recipe < Beerxml::Model
     total_ppg = fermentables.inject(0) { |v, f| v + f.total_ppg(efficiency) }
     og = 1 + ((total_ppg / batch_size.in_gallons.to_f) * 0.001)
     Beerxml.round(og, 3)
+  end
+
+  def calculate_fg
+    og = calculate_og
+    Beerxml.round(og - ((og - 1) * yeasts.first.attenuation * 0.01), 3)
   end
 end

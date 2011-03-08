@@ -101,6 +101,26 @@ Examples: Anchor Steam, Old Peculiar, },
         :hsi => 35.0,
       })
     end
+    it "should parse yeasts" do
+      check_parse(Beerxml::Yeast, "yeast", 3, {
+        :name => 'European Ale',
+        :type => 'Ale',
+        :form => 'Liquid',
+        :amount => 0.035,
+        :amount_is_weight => false,
+        :laboratory => 'White Labs',
+        :product_id => 'WLP011',
+        :min_temperature => 18.3,
+        :max_temperature => 21.1,
+        :flocculation => 'Medium',
+        :attenuation => 67.5,
+        :notes => "Malty, Northern European ale yeast.  Low ester production, low sulfer, gives a clean profile.  Low attenuation contributes to malty taste.",
+        :best_for => "Alt, Kolsch, malty English Ales, Fruit beers",
+        :max_reuse => 5,
+        :times_cultured => 0,
+        :add_to_secondary => false,
+      })
+    end
     it "should parse recipes" do
       recipe = check_parse(Beerxml::Recipe, "recipes", 3, {
         :name => 'Dry Stout',

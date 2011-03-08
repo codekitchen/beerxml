@@ -12,4 +12,10 @@ describe Beerxml::Recipe do
     recipe.should be_valid
     recipe.calculate_og.should == 1.056
   end
+
+  it "should calculate the FG for an all grain batch" do
+    recipe = Beerxml::Recipe.new.from_xml(read_xml("recipes").root.children[1])
+    recipe.should be_valid
+    recipe.calculate_fg.should == 1.016
+  end
 end
