@@ -1,5 +1,4 @@
 require 'dm-core'
-require 'dm-types'
 require 'dm-validations'
 require 'nokogiri'
 

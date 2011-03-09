@@ -1,6 +1,6 @@
 class Beerxml::Fermentable < Beerxml::Model
   property :name, String, :required => true
-  property :type, Enum['Grain', 'Sugar', 'Extract', 'Dry Extract', 'Adjunct'], :required => true
+  property :type, String, :set => ['Grain', 'Sugar', 'Extract', 'Dry Extract', 'Adjunct'], :required => true
   property :amount, Weight, :required => true
   property :yield, Float, :required => true
   property :color, Float, :required => true

@@ -2,12 +2,12 @@ class Beerxml::Hop < Beerxml::Model
   property :name, String, :required => true
   property :alpha, Float, :required => true
   property :amount, Weight, :required => true
-  property :use, Enum['Boil', 'Dry Hop', 'Mash', 'First Wort', 'Aroma'], :required => true
+  property :use, String, :set => ['Boil', 'Dry Hop', 'Mash', 'First Wort', 'Aroma'], :required => true
   property :time, Time, :required => true
 
   property :notes, String, :length => 65535
-  property :type, Enum[nil, 'Bittering', 'Aroma', 'Both']
-  property :form, Enum[nil, 'Pellet', 'Plug', 'Leaf']
+  property :type, String, :set => ['Bittering', 'Aroma', 'Both']
+  property :form, String, :set => ['Pellet', 'Plug', 'Leaf']
   property :beta, Float
   property :hsi, Float
   property :origin, String, :length => 512
