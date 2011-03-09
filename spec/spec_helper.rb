@@ -2,6 +2,8 @@ require 'beerxml'
 
 require 'rspec'
 
+Beerxml::Unit.apply_to_numeric!
+
 RSpec.configure do |c|
   def filename(example)
     "examples/beerxml.com/#{example}.xml"

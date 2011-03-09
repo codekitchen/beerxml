@@ -96,23 +96,8 @@ class Unit
     end
   end
 
-  # todo: remove this, to_beerxml is using it (and incorrectly at that)
-  def to_s
-    to_f.to_s
-  end
-
   def inspect
     "[#{to_f} #{unit}]"
-  end
-
-  def *(rhs)
-    if rhs.is_a?(Numeric)
-      ret = Unit.new(self.to_f * rhs, self.unit)
-    elsif rhs.is_a?(Unit) && rhs.type == type
-      ret = Unit.new(self.to_f * rhs.to(self.unit).to_f, self.unit)
-    else
-      super
-    end
   end
 
   # Assumes earth gravity ;)
