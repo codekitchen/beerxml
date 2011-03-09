@@ -66,4 +66,31 @@ describe "Centennial Blonde" do
     @recipe.calculate_fg.should == 1.010
     @recipe.color == 3.9
   end
+
+  it "should calculate basic stats for the extract version" do
+    @extract = Recipe.new(:name => 'Centennial Blonde',
+                          :type => 'Extract',
+                          :brewer => 'BierMuncher',
+                          :batch_size => U(5.5, 'gallons'),
+                          :boil_size => U(6.75, 'gallons'),
+                          :boil_time => U(60, 'minutes'),
+                          :efficiency => 70.0)
+    @extract.hops.concat @recipe.hops
+    @extract.yeasts.concat @recipe.yeasts
+    @extract.fermentables << Fermentable.new(:name => 'Extra Light DME',
+                                            :type => 'Dry Extract',
+                                            :amount => U(5, 'lb'),
+                                            :ppg => 43,
+                                            :color => 3)
+    @extract.fermentables << Fermentable.new(:name => 'Cara-Pils',
+                                             :type => 'Grain',
+                                             :amount => U(1, 'lb'),
+                                             :ppg => 33,
+                                             :color => 2)
+    @extract.should be_valid
+    @extract.ibus.round.should == 20
+    @extract.calculate_og.should == 1.043
+    @extract.calculate_fg.should == 1.011
+    @extract.color == 3.2
+  end
 end
