@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
-describe "beerxml.com examples" do
+describe "parsing" do
   it "should parse the first recipe and its hops" do
     recipe = Beerxml::Recipe.new.from_xml(read_xml("recipes").root.children[1])
 
