@@ -17,6 +17,10 @@ class Beerxml::Recipe < Beerxml::Model
   has n, :yeasts
   # has n, :waters
 
+  def beerxml_relationships
+    [:hops, :fermentables, :miscs, :yeasts, :waters]
+  end
+
   property :asst_brewer, String
   property :notes, String, :length => 65535
   property :taste_notes, String, :length => 65535

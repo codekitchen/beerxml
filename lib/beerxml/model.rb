@@ -43,13 +43,10 @@ class Beerxml::Model
       read_xml_field(node, property.name.to_s)
     end
     # load any has-many relationships with other beerxml models
-    relationships.each do |name, rel|
-      child_model = rel.child_model
-      next unless child_model.ancestors.include?(Beerxml::Model)
-
+    each_beerxml_relationship do |rel|
       # look for the plural element in the children of this node
       # e.g., for Hop, see if there's any HOPS element.
-      (node>child_model.beerxml_plural_name).each do |child_wrapper_node|
+      (node>rel.child_model.beerxml_plural_name).each do |child_wrapper_node|
         collection = Beerxml::Model.collection_from_xml(child_wrapper_node)
         self.send(rel.name).concat(collection)
       end
@@ -83,8 +80,15 @@ class Beerxml::Model
     attributes.each do |attr, val|
       next if attr.to_s.match(/id\z/) || val.nil?
       x = Nokogiri::XML::Node.new(self.class.xml_attr_name(attr), parent)
-      x.content = val # TODO: data types
+      x.content = self.class.properties[attr].dump(val)
       node.add_child(x)
+    end
+    each_beerxml_relationship do |rel|
+      objs = self.send(rel.name)
+      next if objs.empty?
+      sub_node = Nokogiri::XML::Node.new(rel.child_model.beerxml_plural_name, node)
+      node.add_child(sub_node)
+      objs.each { |o| o.to_beerxml(sub_node) }
     end
     parent.add_child(node)
     parent
@@ -96,6 +100,17 @@ class Beerxml::Model
 
   def self.xml_attr_name(name)
     name.to_s.upcase
+  end
+
+  def beerxml_relationships
+    []
+  end
+
+  def each_beerxml_relationship
+    relationships.each do |name, rel|
+      next unless beerxml_relationships.include?(rel.name)
+      yield rel
+    end
   end
 end
 

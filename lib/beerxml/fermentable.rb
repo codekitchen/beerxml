@@ -22,7 +22,7 @@ class Beerxml::Fermentable < Beerxml::Model
   belongs_to :recipe, :required => false
 
   def ppg=(ppg)
-    self.yield = (ppg / 46.214) / 0.01
+    self.yield = Beerxml.round((ppg / 46.214) / 0.01, 2)
   end
 
   def ppg

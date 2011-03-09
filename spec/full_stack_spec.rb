@@ -67,6 +67,16 @@ describe "Centennial Blonde" do
     @recipe.color == 3.9
   end
 
+  it "should survive the serialization round trip" do
+    xml = Nokogiri::XML(@recipe.to_xml)
+    r2 = Recipe.new.from_xml(xml.root)
+    r2.should be_valid
+    r2.attributes.should == @recipe.attributes
+    r2.each_beerxml_relationship do |rel|
+      r2.send(rel.name).map(&:attributes).should == @recipe.send(rel.name).map(&:attributes)
+    end
+  end
+
   it "should calculate basic stats for the extract version" do
     @extract = Recipe.new(:name => 'Centennial Blonde',
                           :type => 'Extract',
