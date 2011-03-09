@@ -47,7 +47,7 @@ class Beerxml::Recipe < Beerxml::Model
   property :id, Serial
 
   def tinseth
-    Beerxml.round(hops.select { |h| h.use == 'Boil' }.inject(0) { |v, h| v + h.tinseth(og, batch_size) }, 1)
+    Beerxml.round(hops.select { |h| h.use == 'Boil' }.inject(0) { |v, h| v + h.tinseth(calculate_og, batch_size) }, 1)
   end
   alias_method :ibus, :tinseth
 
@@ -60,5 +60,10 @@ class Beerxml::Recipe < Beerxml::Model
   def calculate_fg
     og = calculate_og
     Beerxml.round(og - ((og - 1) * yeasts.first.attenuation * 0.01), 3)
+  end
+
+  def color
+    color = fermentables.inject(0) { |v, f| v + f.total_color }
+    Beerxml.round(1.4922 * ((color / batch_size.in_gallons.to_f) ** 0.6859), 1)
   end
 end

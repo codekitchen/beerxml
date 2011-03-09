@@ -21,6 +21,10 @@ class Beerxml::Fermentable < Beerxml::Model
   property :id, Serial
   belongs_to :recipe, :required => false
 
+  def ppg=(ppg)
+    self.yield = (ppg / 46.214) / 0.01
+  end
+
   def ppg
     # potential is (yield * 0.001 + 1)
     (self.yield * 0.01) * 46.214
@@ -30,5 +34,9 @@ class Beerxml::Fermentable < Beerxml::Model
     total = ppg * amount.in_pounds.to_f
     total *= (efficiency * 0.01) unless efficiency.nil? || type != 'Grain'
     total
+  end
+
+  def total_color
+    amount.in_pounds.to_f * color
   end
 end
