@@ -22,4 +22,29 @@ class Beerxml::Style < Beerxml::Model
   property :profile, String, :length => 65535
   property :ingredients, String, :length => 65535
   property :examples, String, :length => 65535
+
+  # these are not used in the xml
+  property :id, Serial
+  belongs_to :recipe, :required => false
+
+  def range(attr)
+    case attr.to_s
+    when 'og', 'fg', 'ibu', 'color', 'carb', 'abv'
+      (send("#{attr}_min") .. send("#{attr}_max"))
+    else
+      raise ArgumentError, "Invalid attribute"
+    end
+  end
+
+  @predefined_styles = {}
+
+  # returns a hash of { style_name => style }
+  def self.predefined(style_guide)
+    @predefined_styles[style_guide.to_s] ||= begin
+      doc_path = File.expand_path(
+        File.dirname(__FILE__)+"/../../data/styles/#{style_guide}.xml")
+      styles = Beerxml.parse(File.open(doc_path))
+      styles.inject({}) { |h, style| h[style.name] = style; h }
+    end
+  end
 end
