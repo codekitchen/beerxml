@@ -82,6 +82,16 @@ class Beerxml::Model
 
   ##########################
 
+  def self.to_beerxml_collection(collection, parent = Nokogiri::XML::Document.new)
+    raise(ArgumentError, "All must be of the same type") if collection.any? { |n| !n.is_a?(self) }
+    node = Nokogiri::XML::Node.new(self.beerxml_plural_name, parent)
+    collection.each do |n|
+      n.to_beerxml(node)
+    end
+    parent.add_child(node)
+    parent
+  end
+
   def to_beerxml(parent = Nokogiri::XML::Document.new)
     # TODO: do we raise an error if not valid?
     node = Nokogiri::XML::Node.new(self.class.beerxml_name, parent)
