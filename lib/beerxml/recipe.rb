@@ -1,9 +1,8 @@
 class Beerxml::Recipe < Beerxml::Model
-  include DataMapper::Resource
-
   property :name, String, :required => true
   property :type, String, :set => ['Extract', 'Partial Mash', 'All Grain'], :required => true
-  # has 1, :style, :required => true
+  has 1, :style
+  validates_presence_of :style
   property :brewer, String, :required => true
   property :batch_size, Volume, :required => true
   property :boil_size, Volume, :required => true

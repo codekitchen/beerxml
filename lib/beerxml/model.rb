@@ -19,7 +19,7 @@ class Beerxml::Model
   def self.inherited(klass)
     super
     @models[klass.beerxml_name] = klass
-    @plurals["#{klass.beerxml_name}S"] = klass
+    @plurals[klass.beerxml_plural_name] = klass
   end
 
   ##########################
@@ -42,15 +42,21 @@ class Beerxml::Model
     properties.each do |property|
       read_xml_field(node, property.name.to_s)
     end
-    # load any has-many relationships with other beerxml models
+    # load any relationships with other beerxml models
     relationships.each do |name, rel|
       # don't ever serialize the parent recipe
       next if rel.name == :recipe
-      # look for the plural element in the children of this node
-      # e.g., for Hop, see if there's any HOPS element.
-      (node>rel.child_model.beerxml_plural_name).each do |child_wrapper_node|
-        collection = Beerxml::Model.collection_from_xml(child_wrapper_node)
-        self.send(rel.name).concat(collection)
+      if rel.max == 1
+        (node>rel.child_model.beerxml_name).each do |child_node|
+          self.send("#{rel.name}=", rel.child_model.new.from_xml(child_node))
+        end
+      else
+        # look for the plural element in the children of this node
+        # e.g., for Hop, see if there's any HOPS element.
+        (node>rel.child_model.beerxml_plural_name).each do |child_wrapper_node|
+          collection = Beerxml::Model.collection_from_xml(child_wrapper_node)
+          self.send(rel.name).concat(collection)
+        end
       end
     end
     self
@@ -88,11 +94,17 @@ class Beerxml::Model
     relationships.each do |name, rel|
       # don't ever serialize the parent recipe
       next if rel.name == :recipe
-      objs = self.send(rel.name)
-      next if objs.empty?
-      sub_node = Nokogiri::XML::Node.new(rel.child_model.beerxml_plural_name, node)
-      node.add_child(sub_node)
-      objs.each { |o| o.to_beerxml(sub_node) }
+      if rel.max == 1
+        obj = self.send(rel.name)
+        next if obj.nil?
+        obj.to_beerxml(node)
+      else
+        objs = self.send(rel.name)
+        next if objs.empty?
+        sub_node = Nokogiri::XML::Node.new(rel.child_model.beerxml_plural_name, node)
+        node.add_child(sub_node)
+        objs.each { |o| o.to_beerxml(sub_node) }
+      end
     end
     parent.add_child(node)
     parent
@@ -107,5 +119,5 @@ class Beerxml::Model
   end
 end
 
-%w(hop recipe fermentable yeast).
+%w(hop recipe fermentable yeast style).
   each { |f| require "beerxml/#{f}" }

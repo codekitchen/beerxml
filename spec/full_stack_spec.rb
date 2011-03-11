@@ -57,6 +57,19 @@ describe "Centennial Blonde" do
                                 :form => 'Dry',
                                 :amount => 0.2.liters,
                                 :attenuation => 75)
+    @recipe.style = Style.new(:name => "Blonde Ale",
+                              :category => 'North American Origin',
+                              :category_number => '1',
+                              :style_letter => 'gba',
+                              :type => 'Ale',
+                              :og_min => 1.045,
+                              :og_max => 1.056,
+                              :fg_min => 1.008,
+                              :fg_max => 1.016,
+                              :ibu_min => 15,
+                              :ibu_max => 25,
+                              :color_min => 3,
+                              :color_max => 7)
     @recipe.should be_valid
   end
 
@@ -73,7 +86,8 @@ describe "Centennial Blonde" do
     r2.should be_valid
     r2.attributes.should == @recipe.attributes
     Recipe.relationships.each do |name, rel|
-      r2.send(name).map(&:attributes).should == @recipe.send(name).map(&:attributes)
+      next if @recipe.send(name).nil?
+      Array(r2.send(name)).map(&:attributes).should == Array(@recipe.send(name)).map(&:attributes)
     end
   end
 
@@ -87,6 +101,7 @@ describe "Centennial Blonde" do
                           :efficiency => 70.0)
     @extract.hops.concat @recipe.hops
     @extract.yeasts.concat @recipe.yeasts
+    @extract.style = @recipe.style.clone
     @extract.fermentables << Fermentable.new(:name => 'Extra Light DME',
                                             :type => 'Dry Extract',
                                             :amount => U(5, 'lb'),
