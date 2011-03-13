@@ -44,7 +44,25 @@ class Beerxml::Style < Beerxml::Model
       doc_path = File.expand_path(
         File.dirname(__FILE__)+"/../../data/styles/#{style_guide}.xml")
       styles = Beerxml.parse(File.open(doc_path))
-      styles.inject({}) { |h, style| h[style.name] = style; h }
     end
+  end
+
+  # naive ranking, treats all values with equal weight and just measures the
+  # distance from the middle of the road for each value.
+  def match_ranking(og, fg, abv, ibu, color)
+    rank_attr(og, og_min, og_max) +
+      rank_attr(fg, fg_min, fg_max) +
+      rank_attr(abv, abv_min, abv_max) +
+      rank_attr(ibu, ibu_min, ibu_max) +
+      rank_attr(color, color_min, color_max)
+  end
+
+  protected
+
+  def rank_attr(val, min, max)
+    return Infinity if max.blank? || min.blank?
+    range = max - min
+    mid = max - (range / 2)
+    (val - mid).abs / range
   end
 end

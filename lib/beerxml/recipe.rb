@@ -65,4 +65,16 @@ class Beerxml::Recipe < Beerxml::Model
     color = fermentables.inject(0) { |v, f| v + f.total_color }
     Beerxml.round(1.4922 * ((color / batch_size.in_gallons.to_f) ** 0.6859), 1)
   end
+
+  def abv
+    (calculate_og - calculate_fg) * 131
+  end
+
+  def closest_styles(style_list)
+    style_list.dup.sort_by { |style| style.match_ranking(calculate_og,
+                                                         calculate_fg,
+                                                         abv,
+                                                         ibus,
+                                                         color) }
+  end
 end

@@ -77,7 +77,8 @@ describe "Centennial Blonde" do
     @recipe.ibus.round.should == 20
     @recipe.calculate_og.should == 1.041
     @recipe.calculate_fg.should == 1.010
-    @recipe.color == 3.9
+    @recipe.color.should == 3.9
+    @recipe.abv.should be_near 4.06
   end
 
   it "should survive the serialization round trip" do
@@ -117,5 +118,15 @@ describe "Centennial Blonde" do
     @extract.calculate_og.should == 1.043
     @extract.calculate_fg.should == 1.011
     @extract.color == 3.2
+  end
+
+  it "should determine the closest matching beer styles" do
+    rankings = @recipe.closest_styles(Style.predefined(:bjcp))
+    closest = rankings[0,3]
+    closest.each do |style|
+      style.class.should == Beerxml::Style
+      style.should be_valid
+    end
+    closest.map(&:name).should == ['Blonde Ale', 'American Wheat or Rye Beer', 'Cream Ale']
   end
 end
