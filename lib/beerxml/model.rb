@@ -43,7 +43,7 @@ class Beerxml::Model
       read_xml_field(node, property.name.to_s)
     end
     # load any relationships with other beerxml models
-    relationships.each do |name, rel|
+    relationships.each do |rel|
       # don't ever serialize the parent recipe
       next if rel.name == :recipe
       if rel.max == 1
@@ -101,7 +101,7 @@ class Beerxml::Model
       x.content = self.class.properties[attr].dump(val)
       node.add_child(x)
     end
-    relationships.each do |name, rel|
+    relationships.each do |rel|
       # don't ever serialize the parent recipe
       next if rel.name == :recipe
       if rel.max == 1

@@ -62,7 +62,7 @@ class Beerxml::Style < Beerxml::Model
   protected
 
   def rank_attr(val, min, max)
-    return Infinity if max.blank? || min.blank?
+    return Infinity if max.nil? || min.nil? || max == '' || min == ''
     range = max - min
     mid = max - (range / 2)
     (val - mid).abs / range

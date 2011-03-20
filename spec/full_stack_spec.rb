@@ -86,9 +86,9 @@ describe "Centennial Blonde" do
     r2 = Recipe.new.from_xml(xml.root)
     r2.should be_valid
     r2.attributes.should == @recipe.attributes
-    Recipe.relationships.each do |name, rel|
-      next if @recipe.send(name).nil?
-      Array(r2.send(name)).map(&:attributes).should == Array(@recipe.send(name)).map(&:attributes)
+    Recipe.relationships.each do |rel|
+      next if @recipe.send(rel.name).nil?
+      Array(r2.send(rel.name)).map(&:attributes).should == Array(@recipe.send(rel.name)).map(&:attributes)
     end
   end
 
