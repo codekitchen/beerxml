@@ -125,7 +125,7 @@ describe "Centennial Blonde" do
     closest = rankings[0,3]
     closest.each do |style|
       style.class.should == Beerxml::Style
-      style.should be_valid
+      style.dup.should be_valid
     end
     closest.map(&:name).should == ['Blonde Ale', 'American Wheat or Rye Beer', 'Cream Ale']
   end

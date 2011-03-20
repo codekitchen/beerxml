@@ -24,6 +24,10 @@ desc "Parse the XML version of the BJCP style guide"
 # This creates Beerxml::Style objects.
 # These are then dumped as a beerxml-formatted <STYLES>...</STYLES> tag.
 #
+# If you just want to use the styles, there's no need to run this rake task
+# since they're already included in the library.
+# Just call Beerxml::Style.predefined(:bjcp)
+#
 # Important: BJCP does not currently allow hosting of the guidelines. This
 # means that we can't import the tasting notes, descriptions, etc., into the
 # app. I've spoken with BJCP to clarify exactly what this means, and it means

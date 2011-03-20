@@ -38,12 +38,14 @@ class Beerxml::Style < Beerxml::Model
 
   @predefined_styles = {}
 
-  # returns a hash of { style_name => style }
+  # returns an array of Style objects
+  # both the array and the styles in the array are frozen, so make sure to .dup
+  # the object if you want to modify it.
   def self.predefined(style_guide)
     @predefined_styles[style_guide.to_s] ||= begin
       doc_path = File.expand_path(
         File.dirname(__FILE__)+"/../../data/styles/#{style_guide}.xml")
-      styles = Beerxml.parse(File.open(doc_path))
+      styles = Beerxml.parse(File.open(doc_path)).map { |s| s.freeze }.freeze
     end
   end
 

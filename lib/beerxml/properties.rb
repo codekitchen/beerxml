@@ -8,14 +8,18 @@ module Beerxml::Properties
       true
     end
 
+    def valid_unit_type?(value_type)
+      value_type == unit_type
+    end
+
     def primitive?(value)
-      value.is_a?(Beerxml::Unit) && value.type == unit_type
+      value.is_a?(Beerxml::Unit) && valid_unit_type?(value.type)
     end
 
     def load(value)
       return if value.nil?
       if value.is_a?(Beerxml::Unit)
-        raise(ArgumentError, "#{value.inspect} is not a #{unit_type}") unless value.type == unit_type
+        raise(ArgumentError, "#{value.inspect} is not a #{unit_type}") unless valid_unit_type?(value.type)
         value
       else
         U(value, base_unit)

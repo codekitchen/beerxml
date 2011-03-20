@@ -12,7 +12,7 @@ class Beerxml::Recipe < Beerxml::Model
 
   has n, :hops
   has n, :fermentables
-  # has n, :miscs
+  has n, :miscs
   has n, :yeasts
   # has n, :waters
 

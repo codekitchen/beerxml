@@ -129,5 +129,5 @@ class Beerxml::Model
   end
 end
 
-%w(hop recipe fermentable yeast style).
+%w(amount_is_weight hop recipe fermentable yeast style misc).
   each { |f| require "beerxml/#{f}" }

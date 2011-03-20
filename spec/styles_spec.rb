@@ -4,7 +4,7 @@ describe Beerxml::Style do
   it "should have predefined BJCP styles" do
     styles = Beerxml::Style.predefined(:bjcp)
     style = styles.find { |s| s.name == 'Cream Ale' }
-    style.should be_valid
+    style.dup.should be_valid
     style.category_number.should == '6'
     style.style_letter.should == 'A'
     style.range(:og).should == (1.042 .. 1.055)

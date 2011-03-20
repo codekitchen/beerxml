@@ -4,10 +4,9 @@ class Beerxml::Yeast < Beerxml::Model
   property :name, String, :required => true
   property :type, String, :set => ['Ale', 'Lager', 'Wheat', 'Wine', 'Champagne'], :required => true
   property :form, String, :set => ['Liquid', 'Dry', 'Slant', 'Culture'], :required => true
-  # TODO: sheesh... this can be a Weight instead, if amount_is_weight
-  property :amount, Volume, :required => true
+  property :amount, AmountIsWeight::VolumeOrWeight, :required => true
+  include AmountIsWeight
 
-  property :amount_is_weight, Boolean
   property :laboratory, String
   property :product_id, String
   property :min_temperature, Temperature
