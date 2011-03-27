@@ -86,3 +86,33 @@ task :parse_styleguide, :file_name do |t, args|
   end
   puts Beerxml::Style.to_beerxml_collection(styles).to_s
 end
+
+desc "Parse the HTML malt chart"
+task :parse_malt_chart do |t|
+  require 'open-uri'
+  require 'beerxml'
+  path = "http://www.homebrewtalk.com/wiki/index.php/Malts_Chart"
+  fermentables = []
+
+  root = Nokogiri::HTML(open(path)).root
+  root.css("table:first tr").each do |row|
+    tds = row.css("td")
+    next if tds.size < 5
+    f_name = tds[0].text.strip
+    f_yield = tds[2].text.to_f
+    f_srm = tds[3].text.to_f
+    f_mash = tds[4].text.strip == "X"
+
+    if f_yield > 0
+      fermentables << Beerxml::Fermentable.new({
+        :type => 'Grain',
+        :name => f_name,
+        :yield => f_yield,
+        :color => f_srm,
+        :recommend_mash => f_mash,
+      })
+    end
+  end
+
+  puts Beerxml::Fermentable.to_beerxml_collection(fermentables).to_s
+end
